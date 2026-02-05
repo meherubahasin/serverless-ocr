@@ -1,10 +1,8 @@
 # Serverless OCR with Tesseract
 
-A robust, serverless Optical Character Recognition (OCR) API built with **FastAPI** and **Tesseract OCR**. It features a modern "Glass Skin" web interface, intelligent caching, and multi-format support.
+A robust, serverless Optical Character Recognition (OCR) API built with **FastAPI** and **Tesseract OCR**. 
 
-Designed to be deployed as a Docker container to **Render.com** (Free) or **Google Cloud Run**.
-
-![Glass Skin UI Interface](app/static/demo-screenshot.png) <!-- Placeholder for screenshot if user adds one later -->
+Designed to be deployed as a Docker container to **Render.com** (Free).
 
 ## Features
 
