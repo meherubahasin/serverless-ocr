@@ -6,7 +6,7 @@ Designed to be deployed as a Docker container to **Render.com** (Free) or **Goog
 
 ![Glass Skin UI Interface](app/static/demo-screenshot.png) <!-- Placeholder for screenshot if user adds one later -->
 
-## ✨ Features
+## Features
 
 ### Core Capabilities
 *   **Powerful OCR**: Extracts text using the open-source **Tesseract OCR** engine.
@@ -28,7 +28,7 @@ Designed to be deployed as a Docker container to **Render.com** (Free) or **Goog
 ---
 <img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/02ed5ea2-166f-417e-add8-3b15b27f6114" />
 
-## 🚀 Deployment (Recommended: Render.com)
+## Deployment (Recommended: Render.com)
 
 This application is configured for easy deployment on **Render.com**'s free tier using Docker.
 
@@ -36,7 +36,7 @@ This application is configured for easy deployment on **Render.com**'s free tier
 
 ---
 
-## 🛠️ Local Development
+## Local Development
 
 ### Prerequisites
 *   Python 3.10+
@@ -63,7 +63,7 @@ This application is configured for easy deployment on **Render.com**'s free tier
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### 1. Extract Text (Single File)
 **Endpoint**: `POST /extract-text`
@@ -97,8 +97,23 @@ This application is configured for easy deployment on **Render.com**'s free tier
   ]
 }
 ```
+### USAGE EXAMPLE
+```bash
+curl -X POST "http://localhost:8000/extract-text" \
+  -H "accept: application/json" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/your/image.jpg"
+```
 
-## 🏗️ Tech Stack
+**Batch Extraction:**
+```bash
+curl -X POST "http://localhost:8000/extract-text-batch" \
+  -H "accept: application/json" \
+  -H "Content-Type: multipart/form-data" \
+  -F "files=@image1.jpg" \
+  -F "files=@image2.png"
+```
+## Tech Stack
 *   **Framework**: FastAPI
 *   **OCR Engine**: Tesseract (via `pytesseract`)
 *   **Image Processing**: Pillow (PIL)
