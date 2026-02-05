@@ -1,120 +1,106 @@
-# Serverless OCR API
+# Serverless OCR with Tesseract
 
-A serverless API built with FastAPI and Google Cloud Run that extracts text from images using **Tesseract OCR**.
+A robust, serverless Optical Character Recognition (OCR) API built with **FastAPI** and **Tesseract OCR**. It features a modern "Glass Skin" web interface, intelligent caching, and multi-format support.
 
-## Features
-- **Frontend**: One-click drag-and-drop interface for easy testing.
-- **Serverless**: Deployed on Google Cloud Run for auto-scaling and zero maintenance.
-- **Fast & Async**: Built with FastAPI for high performance.
-- **OCR Integration**: Uses Google Cloud Vision API for industry-leading text recognition.
-- **Validation**: Strict validation for file type (JPG) and size (10MB).
+Designed to be deployed as a Docker container to **Render.com** (Free) or **Google Cloud Run**.
 
-## API Documentation
+![Glass Skin UI Interface](app/static/demo-screenshot.png) <!-- Placeholder for screenshot if user adds one later -->
 
-### Web Interface
-Access the web interface at the root URL: `https://YOUR_SERVICE_URL/`
+## ✨ Features
 
-### Extract Text from Image via POST
-**Endpoint:** `POST /extract-text`
+### Core Capabilities
+*   **Powerful OCR**: Extracts text using the open-source **Tesseract OCR** engine.
+*   **Multi-Format Support**: Reads JPG, PNG, GIF, BMP, WEBP, and TIFF files.
+*   **Smart Preprocessing**: Automatically corrects image orientation (OSD) and normalizes whitespace for cleaner results.
+*   **Confidence Scoring**: Returns a confidence % for the extracted text.
 
-**Health Check:** `GET /health`
+### Performance & Security
+*   **Intelligent Caching**: In-memory caching ensures that re-uploading the same image (detected via SHA256 hash) returns an instant result.
+*   **Rate Limiting**: Protected by `slowapi` (10 requests/minute per IP) to prevent abuse.
+*   **Batch Processing**: `POST /extract-text-batch` endpoint for processing multiple files at once.
+*   **Serverless Ready**: Dockerized application optimized for stateless serverless environments.
 
-**Request:**
-- **Content-Type:** `multipart/form-data`
-- **Body parameters:**
-    - `file`: The JPG image file to process (Max 10MB).
+### User Interface
+*   **Glassmorphism Design**: Beautiful dark-mode UI with frosted glass effects.
+*   **Drag & Drop**: Easy file upload with drag-and-drop support.
+*   **Live Stats**: Real-time display of processing time and confidence score.
 
-**Response (Success - 200 OK):**
-```json
-{
-  "success": true,
-  "text": "Extracted text content.",
-  "confidence": 0.95,
-  "processing_time_ms": 120
-}
-```
+---
+<img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/02ed5ea2-166f-417e-add8-3b15b27f6114" />
 
-**Response (No Text Found - 200 OK):**
-```json
-{
-  "success": true,
-  "text": null,
-  "confidence": 0.0,
-  "processing_time_ms": 85,
-  "message": "No text found"
-}
-```
+## 🚀 Deployment (Recommended: Render.com)
 
-**Response (Error - 400 Bad Request):**
-```json
-{
-  "success": false,
-  "error": "Invalid file type. Only JPG/JPEG is supported.",
-  "processing_time_ms": 0
-}
-```
+This application is configured for easy deployment on **Render.com**'s free tier using Docker.
 
-### Curl Example
-```bash
-curl -X POST -F "file=@/path/to/image.jpg" https://YOUR_SERVICE_URL/extract-text
-```
 
-## Setup & Deployment
+
+---
+
+## 🛠️ Local Development
 
 ### Prerequisites
-- Google Cloud Platform (GCP) Project (for Cloud Run)
-- Google Cloud SDK (`gcloud`) installed
-- **Tesseract OCR** installed locally
+*   Python 3.10+
+*   **Tesseract OCR** installed on your machine:
+    *   **Windows**: [Install Installer](https://github.com/UB-Mannheim/tesseract/wiki) (Add to PATH)
+    *   **Mac**: `brew install tesseract`
+    *   **Linux**: `sudo apt-get install tesseract-ocr`
 
-### Local Development
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Make sure Tesseract is installed and in your PATH.
-4. Run the server:
-   ```bash
-   python -m uvicorn app.main:app --reload
-   ```
+### Running Locally
+1.  **Clone & Install**:
+    ```bash
+    git clone <your-repo-url>
+    cd Flexbone
+    pip install -r requirements.txt
+    ```
 
-### Running Tests
-```bash
-pytest
+2.  **Start Server**:
+    ```bash
+    python -m uvicorn app.main:app --reload
+    ```
+
+3.  **Open Interface**:
+    Visit `http://127.0.0.1:8000` in your browser.
+
+---
+
+## 📚 API Documentation
+
+### 1. Extract Text (Single File)
+**Endpoint**: `POST /extract-text`
+
+**Request**: `multipart/form-data`
+*   `file`: Image file (Max 10MB)
+
+**Response**:
+```json
+{
+  "success": true,
+  "text": "Extracted text content...",
+  "confidence": 0.95,
+  "processing_time_ms": 120,
+  "cached": false
+}
 ```
 
-### Deployment to Google Cloud Run
-1. Authenticate with Google Cloud:
-   ```bash
-   gcloud auth login
-   gcloud config set project [YOUR_PROJECT_ID]
-   ```
+### 2. Extract Text (Batch)
+**Endpoint**: `POST /extract-text-batch`
 
-2. Build and Deploy:
-   ```bash
-   gcloud run deploy ocr-api \
-     --source . \
-     --platform managed \
-     --region us-central1 \
-     --allow-unauthenticated
-   ```
+**Request**: `multipart/form-data`
+*   `files`: List of image files
 
-3. The command will output your public service URL.
+**Response**:
+```json
+{
+  "results": [
+    { "filename": "img1.jpg", "success": true, "text": "...", ... },
+    { "filename": "img2.png", "success": true, "text": "...", ... }
+  ]
+}
+```
 
-## Implementation Details
-
-### Tech Stack
-- **Python 3.10**: Modern Python runtime.
-- **FastAPI**: Modern, fast (high-performance) web framework for building APIs with Python.
-- **Google Cloud Vision API**: Used for `text_detection` to extract text from images.
-- **Docker**: Containerization for consistent deployment.
-- **Cloud Run**: Serverless container platform for deployment.
-
-### File Handling
-The API accepts files via `multipart/form-data`.
-- We validate `content_type` to ensure only `image/jpeg` or `image/jpg` are processed.
-- We check the stream size to ensure it doesn't exceed 10MB before processing.
-- The file bytes are passed directly to the generic Vision API client without saving to disk, ensuring ephemeral efficiency.
-
-### Deployment Strategy
-The application is containerized using Docker. Google Cloud Run automatically requires a container. We use the `--source .` flag which uses Google Cloud Build packs or the Dockerfile to build the image and then deploys it to Cloud Run. The service is configured to allow unauthenticated access for public usage as per requirements.
+## 🏗️ Tech Stack
+*   **Framework**: FastAPI
+*   **OCR Engine**: Tesseract (via `pytesseract`)
+*   **Image Processing**: Pillow (PIL)
+*   **Rate Limiting**: Slowapi
+*   **Container**: Docker
