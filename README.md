@@ -46,7 +46,7 @@ This application is configured for easy deployment on **Render.com**'s free tier
 ### Running Locally
 1.  **Clone & Install**:
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/meherubahasin/serverless-ocr.git
     cd Flexbone
     pip install -r requirements.txt
     ```
