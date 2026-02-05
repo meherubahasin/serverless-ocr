@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serverless OCR - Cloud Run</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Mono&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/style.css?v=4">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Serverless OCR</h1>
+            <p class="subtitle">Extract text from images using Tesseract OCR</p>
+        </header>
+
+        <main class="glass-card">
+            <div id="upload-area" class="upload-area">
+                <input type="file" id="file-input"
+                    accept="image/jpeg, image/jpg, image/png, image/gif, image/bmp, image/webp, image/tiff">
+                <div class="upload-icon">
+                    <span class="material-icons-round" style="font-size: 48px;">cloud_upload</span>
+                </div>
+                <p class="upload-text">Click to upload or drag and drop</p>
+                <p class="upload-hint">Supported: JPG, PNG, GIF, WEBP, BMP (Max 10MB)</p>
+                <p id="file-name" style="margin-top: 1rem; color: var(--accent-color); display: none;"></p>
+            </div>
+
+            <div id="error-msg" class="error-message"></div>
+
+            <button id="extract-btn" class="btn">
+                <span class="btn-text">Extract Text</span>
+                <div class="loader"></div>
+            </button>
+
+            <div id="result-section" class="result-section">
+                <div class="result-header">
+                    <h3>Extraction Result</h3>
+                    <div class="stats">
+                        <span class="stat-badge">
+                            <span class="material-icons-round"
+                                style="font-size: 14px; vertical-align: text-bottom;">timer</span>
+                            <span id="time-val">0ms</span>
+                        </span>
+                        <span class="stat-badge">
+                            <span class="material-icons-round"
+                                style="font-size: 14px; vertical-align: text-bottom;">verified</span>
+                            <span id="conf-val">0%</span>
+                        </span>
+                    </div>
+                </div>
+                <textarea id="output-text" class="text-output" readonly
+                    placeholder="Extracted text will appear here..."></textarea>
+            </div>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
